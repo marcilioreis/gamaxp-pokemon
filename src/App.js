@@ -106,7 +106,6 @@ class App extends Component {
     });
   }
   handleTransaction(e) {
-    console.log('event :>> ', e);
     Alertify.success('Compra efetuada com sucesso!');
 
     this.setState(() => {
