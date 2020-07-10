@@ -1,8 +1,8 @@
-import { combineReducers } from "redux";
-import productReducers from "./productReducers";
-import cartReducers from "./cartReducers";
+import { combineReducers } from 'redux';
+import pokemonReducers from './pokemonReducers';
+import cartReducers from './cartReducers';
 
 export default combineReducers({
-  products: productReducers,
+  pokemon: pokemonReducers,
   cart: cartReducers,
 });

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import Alertify from 'alertifyjs';
+// import Alertify from 'alertifyjs';
 import * as S from './styles/App.js';
-import axios from 'axios';
 import { Provider } from 'react-redux';
 import Pokemon from './components/Pokemon';
 import Filter from './components/Filter';
@@ -10,137 +9,6 @@ import store from './store';
 import './App.css';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      pokemon: [],
-      filteredPokemon: [],
-      cartItems: [],
-      termo: '',
-    };
-    this.updateTermo = this.updateTermo.bind(this);
-    this.handleSearch = this.handleSearch.bind(this);
-    this.handleChangeSort = this.handleChangeSort.bind(this);
-    this.handleAddToCart = this.handleAddToCart.bind(this);
-    this.handleRemoveFromCart = this.handleRemoveFromCart.bind(this);
-    this.handleTransaction = this.handleTransaction.bind(this);
-  }
-  componentWillMount() {
-    axios
-      .get(`https://pokeapi.co/api/v2/pokemon/?offset=0&limit=15`)
-      .then((response) => {
-        this.setState({
-          results: response.data.results,
-          filteredPokemon: response.data.results,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
-    if (localStorage.getItem('cartItems')) {
-      this.setState({
-        cartItems: JSON.parse(localStorage.getItem('cartItems')),
-      });
-    }
-  }
-  handleChangeSort(e) {
-    this.setState({ sort: e.target.value });
-    this.listProducts();
-  }
-  listProducts() {
-    this.setState((state) => {
-      if (state.sort !== '') {
-        state.results.sort((a, b) =>
-          state.sort === 'a-to-z'
-            ? a.name > b.name
-              ? 1
-              : -1
-            : a.name < b.name
-            ? 1
-            : -1
-        );
-      } else {
-        state.results.sort((a, b) => (a.name > b.name ? 1 : -1));
-      }
-
-      return { filteredPokemon: state.results };
-    });
-  }
-  handleAddToCart(e, pokemon) {
-    this.setState((state) => {
-      const cartItems = state.cartItems;
-      let productAlreadyInCart = false;
-
-      const idPokemon = (pokemon) => {
-        return pokemon.url.split('/')[pokemon.url.split('/').length - 2];
-      };
-
-      cartItems.forEach((item) => {
-        if (item.name === pokemon.name) {
-          productAlreadyInCart = true;
-          item.count++;
-        }
-      });
-
-      if (!productAlreadyInCart) {
-        cartItems.push({
-          ...pokemon,
-          count: 1,
-          price: idPokemon(pokemon) * 3.14,
-        });
-      }
-
-      localStorage.setItem('cartItems', JSON.stringify(cartItems));
-
-      return cartItems;
-    });
-  }
-  handleRemoveFromCart(e, item) {
-    this.setState((state) => {
-      const cartItems = state.cartItems.filter((el) => el.name !== item.name);
-
-      localStorage.setItem('cartItems', JSON.stringify(cartItems));
-
-      return { cartItems };
-    });
-  }
-  handleTransaction(e) {
-    Alertify.success('Compra efetuada com sucesso!');
-
-    this.setState(() => {
-      const cartItems = [];
-
-      // state.cartItems = emptyCart;
-
-      localStorage.setItem('cartItems', cartItems);
-
-      return { cartItems };
-    });
-  }
-  updateTermo(e) {
-    this.setState({ termo: e.target.value });
-  }
-  handleSearch() {
-    const termo = this.state.termo;
-
-    if (termo !== '') {
-      axios
-        .get(`https://pokeapi.co/api/v2/pokemon/${termo}/?offset=0&limit=15`)
-        .then((response) => {
-          this.setState({
-            results: response.data.forms,
-            filteredPokemon: response.data.forms,
-          });
-        })
-        .catch((err) => {
-          console.error(err);
-          Alertify.error('Sua busca não retornou resultados');
-        });
-    } else {
-      Alertify.warning('Por favor, digite um termo para busca');
-    }
-  }
   render() {
     return (
       <Provider store={store}>
@@ -155,28 +23,14 @@ class App extends Component {
           <div className="container py-5" style={{ marginTop: '150px' }}>
             <div className="row">
               <div className="col-md-9 bg-light py-5">
-                <Filter
-                  termo={this.state.termo}
-                  sort={this.state.sort}
-                  handleChangeSort={this.handleChangeSort}
-                  updateTermo={this.updateTermo}
-                  handleSearch={this.handleSearch}
-                  count={this.state.filteredPokemon.length}
-                />
+                <Filter />
 
                 <hr />
 
-                <Pokemon
-                  results={this.state.filteredPokemon}
-                  handleAddToCart={this.handleAddToCart}
-                />
+                <Pokemon />
               </div>
               <div className="col-md-3">
-                <Basket
-                  cartItems={this.state.cartItems}
-                  handleRemoveFromCart={this.handleRemoveFromCart}
-                  handleTransaction={this.handleTransaction}
-                />
+                <Basket />
               </div>
             </div>
           </div>

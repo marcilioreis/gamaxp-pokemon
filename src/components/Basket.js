@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-// import { connect } from 'react-redux';
 import util from '../util';
-// import { addToCart, removeFromCart } from '../actions/cartActions';
-export default class Basket extends Component {
+import { connect } from 'react-redux';
+import { addToCart, removeFromCart, finishCart } from '../actions/cartActions';
+
+class Basket extends Component {
   render() {
     const { cartItems } = this.props;
 
@@ -25,11 +26,8 @@ export default class Basket extends Component {
                   <button
                     style={{ float: 'right' }}
                     className="btn btn-danger btn-xs"
-                    onClick={(e) =>
-                      this.props.handleRemoveFromCart(
-                        this.props.cartItems,
-                        item
-                      )
+                    onClick={() =>
+                      this.props.removeFromCart(this.props.cartItems, item)
                     }
                   >
                     X
@@ -48,7 +46,7 @@ export default class Basket extends Component {
             </b>
             <br />
             <button
-              onClick={(e) => this.props.handleTransaction(e)}
+              onClick={() => this.props.finishCart()}
               className="btn btn-primary btn-block mt-5"
             >
               Fechar Pedido
@@ -59,7 +57,11 @@ export default class Basket extends Component {
     );
   }
 }
-// const mapStateToProps = (state) => ({
-//   cartItems: state.cart.items,
-// });
-// export default connect(mapStateToProps, { addToCart, removeFromCart })(Basket);
+const mapStateToProps = (state) => ({
+  cartItems: state.cart.items,
+});
+export default connect(mapStateToProps, {
+  addToCart,
+  removeFromCart,
+  finishCart,
+})(Basket);

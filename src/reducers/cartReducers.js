@@ -1,4 +1,4 @@
-import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/types";
+import { ADD_TO_CART, REMOVE_FROM_CART, FINISH_CART } from '../actions/types';
 
 export default function (state = {}, action) {
   switch (action.type) {
@@ -6,7 +6,8 @@ export default function (state = {}, action) {
       return { ...state, items: action.payload.cartItems };
     case REMOVE_FROM_CART:
       return { ...state, items: action.payload.cartItems };
-
+    case FINISH_CART:
+      return { ...state, items: action.payload.cartItems };
     default:
       return state;
   }

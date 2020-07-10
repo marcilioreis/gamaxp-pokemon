@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import util from '../util';
+import { addToCart } from '../actions/cartActions';
+import { fetchPokemon } from '../actions/pokemonActions';
 
-export default class Pokemon extends Component {
+class Pokemon extends Component {
+  componentWillMount() {
+    this.props.fetchPokemon();
+  }
   render() {
     const idPokemon = (pokemon) => {
       return pokemon.url.split('/')[pokemon.url.split('/').length - 2];
@@ -14,7 +20,7 @@ export default class Pokemon extends Component {
         <div className="thumbnail text-center">
           <a
             href={`#${pokemon.name}`}
-            onClick={(e) => this.props.handleAddToCart(e, pokemon)}
+            onClick={() => this.props.addToCart(this.props.cartItems, pokemon)}
           >
             <img src={imgUrl(idPokemon(pokemon))} alt={pokemon.name} />
             <p className="text-primary">{pokemon.name}</p>
@@ -24,7 +30,7 @@ export default class Pokemon extends Component {
           <br />
           <button
             className="btn btn-primary btn-sm my-3"
-            onClick={(e) => this.props.handleAddToCart(e, pokemon)}
+            onClick={() => this.props.addToCart(this.props.cartItems, pokemon)}
           >
             Adicionar ao carrinho
           </button>
@@ -35,3 +41,10 @@ export default class Pokemon extends Component {
     return <div className="row">{pokemonItems}</div>;
   }
 }
+
+const mapStateToProps = (state) => ({
+  results: state.pokemon.filteredPokemon,
+  cartItems: state.cart.items,
+});
+
+export default connect(mapStateToProps, { fetchPokemon, addToCart })(Pokemon);
